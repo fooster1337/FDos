@@ -12,6 +12,14 @@ import ipaddress
 from urllib.parse import urlparse
 
 version = 1.0
+banner = """
+  ______ _____        _____ 
+ |  ____|  __ \      / ____|
+ | |__  | |  | | ___| (___  
+ |  __| | |  | |/ _ \\___ \ 
+ | |    | |__| | (_) |___) |
+ |_|    |_____/ \___/_____/                 
+"""
 
 def error_msg(msg):
     print(f"[ERROR] {msg}")
@@ -31,6 +39,7 @@ def main():
     
     #print(args)
     if len(sys.argv) <= 1:
+        print(banner)
         parser.parse_args(['-h'])
         sys.exit(0)
     else:

@@ -15,7 +15,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class Http:
     packet_sent = 0
-    def __init__(self, method, target, sleep, thread, tipe, proxy) -> None:
+    def __init__(self, method, target, sleep, thread, tipe) -> None:
         if method.upper() == "HTTP/SG":
             self.method = "get"
         else:
@@ -25,7 +25,6 @@ class Http:
         self.sleep = sleep
         self.thread = thread
         self.http = urllib3.PoolManager()
-        self.proxy = proxy
 
 
     def uparse(self, url):

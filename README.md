@@ -21,9 +21,14 @@ python3 fdos.py
 -d (ddos type) example : -d HTTP/SG (http get) or -d HTTP/SP (http post) (required)
 -th (thread) example : -th 100 (set thread to 100) (default = 10)
 -s (sleep when error connect during attack) example : -s 10 (second)
+-sm (summon another terminal for ddos) example : -sm/--summon <number for how many terminals to call> example : -sm 10
+Note : Summon method only using xterm on linux so install xterm before this method!.
 -v for check version tools
 -ld for showing ddos type in fdos
+
 ```
+Example summon method<br>
+![summon](https://raw.githubusercontent.com/fooster1337/FDos/main/img/summon.gif)
 # Warning!!!
 
 This DDoS tool does not yet support proxies or auto change IP. Therefore, don't use real internet.

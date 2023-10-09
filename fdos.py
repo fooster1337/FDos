@@ -13,7 +13,7 @@ import sys
 import ipaddress
 from urllib.parse import urlparse
 
-version = 1.0
+version = 2.0
 banner = """
   ______ _____        _____ 
  |  ____|  __ \      / ____|

